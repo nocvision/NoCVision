@@ -1,0 +1,45 @@
+END
+K 4
+revs
+V 14
+dir _18.0.t0-0
+K 16
+txn-current-lock
+V 15
+file _1f.0.t0-0
+K 8
+revprops
+V 14
+dir _1h.0.t0-0
+K 10
+write-lock
+V 15
+file _1n.0.t0-0
+K 7
+current
+V 15
+file _1p.0.t0-0
+K 9
+fsfs.conf
+V 15
+file _1r.0.t0-0
+K 16
+min-unpacked-rev
+V 15
+file _1t.0.t0-0
+K 4
+uuid
+V 15
+file _1v.0.t0-0
+K 7
+fs-type
+V 15
+file _1x.0.t0-0
+K 6
+format
+V 15
+file _1z.0.t0-0
+K 12
+transactions
+V 14
+dir _21.0.t0-0
