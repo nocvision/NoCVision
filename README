@@ -1,0 +1,85 @@
+1. What is NoCVision?
+NoCVision is a graphical visualization tool for analysis of Network-on-Chip systems. It provides a visual display of packet information generated during Network-on-Chip simulations, making the design analysis easier. It can accept a wide range of data associated with links, routers, and virtual channels to generate a graph that is intuitive, easy to navigate and flexible.
+
+2.Key Features
+Configure a network by passing topology parameters through a text file. 
+NoCVision is oblivious to the meaning of the analysis parameter. Any link, router or VC related parameter can be visualized. 
+Two modes of operation: interval mode and event mode.
+In interval mode, NoCVision visualizes packet traffic across multiple clock cycles.
+In event mode, a particular event can be logged and analyzed in a simulation.
+NoCVision allows intuitive and flexible navigation through the logged data.
+
+3. Quick Setup
+ 
+a. Prerequisites
+Linux Machine (tested on Ubuntu 12.04 LTS and Ubuntu 14.04 LTS)
+Python version 2.7.x
+Python Matplotlib library
+To install python prerequisites on Ubuntu Linux, you can execute the following command:  
+$ sudo apt-get install python2.7 python-matplotlib
+
+b. Test your download
+You can run the example log file to verify that the environment is configured correctly.
+$ cd src/ 
+$ ./NoCVision.py ../example_config/sample_interval_mode.txt
+
+
+4. Modes of operation
+NoCVision can be run in two different modes depending on the type of data that needs to be analyzed.
+
+a. Interval Mode
+In this mode, NoCVision visualizes packet flows in the network across multiple time intervals. For each interval, parameters to be analyzed are provided in the configuration file.
+Few examples of parameters that can be analyzed in this mode include number of packets traversing through the links, router occupancy, VC utilization etc.
+NoCVision is oblivious to the meaning of the parameters being monitored. This allows for flexibility in analyzing any parameters associated with a link, router or virtual channel.
+The parameters are specified in the configuration file in a format that determines the network component it is associated to.
+NoCVision uses color intensity to visualize the values of a parameter.
+
+b. Event Mode
+In this mode, data is logged for specific events instead of intervals. This allows the user to locate and view a particular event in the entire simulation, rather than parsing through the data across intervals to understand the behavior of the network.
+The events can be scattered across multiple clock cycles and NoCVision displays the data for each event.
+Several events, such as traversal of a packet in a network, parameter exceeding a threshold, faulty/powered-off components, etc. can be traced in this mode.
+
+5. Running NoCVision
+This section will guide you through the steps necessary to setup and create a configuration file and run NoCVision.
+
+a. Network Topology Configuration
+The user needs to provide network configuration parameters and the traffic log in the same file. Hardware parameters, such as the type of network topology, number of routers, and link connectivity are provided first in this file. Currently, NoCVision supports k-ary 2-cube mesh topology. The following information has to be provided at the start of the configuration file:
+
+topology = '{type}' - State type of network topology. Currently, only topology = 'mesh' is supported.
+k = {n_routers} - Specify number of routers in one dimension.
+n = {n_dim} - Specify number of dimensions in the network topology. Currently NoCVision supports a 2 dimensional network.
+num_vcs = {n_vcs} - Specify number of virtual channels in a router.
+
+b. Analysis Parameters
+Once the NoC is configured, parameters to be analyzed are provided in the configuration file. NoCVision expects the user to provide this information in the following format:
+
+Interval mode options:
+[clock = {cycle}] - Declare length of interval for which each set of data is collected. Interval 1-100 is specified as [clock = 100].
+{router_parameter} = {r_value} - Parameter associated with router is assigned to an array of size = number_of_routers. For instance, the size of array in a 8*8 network is 64.
+{link_parameter} = {l_value} - Parameter associated with a link is assigned an array of size = number_of_link_directions * number_of_routers. For instance, the size of an array for a 8*8 network is 4*64.
+{vc_parameter} = {vc_value} - Parameter associated with a virtual channel is assigned an array of size = number_of_VCs * number_of_link_directions * number_of_routers. For instance, the size of array for a 8*8 network with 8 VCs in each router is 8*4*64.
+
+NoCVision infers the type of a parameter by the size of array it is assigned to.
+
+Event mode options:
+nocvision:trace:clock_<c>:pid_<id>:node_<n>:link_<l>:vc_<v> - Specify the node 'n', link 'l' and VC 'v' at which a packet with id 'id' is traversing in a clock cycle 'c'. In the trace feature, values for all these fields have to supplied. Trace is used to view the tranversal of packets in the network. The injection and ejection events of a given packet are specified by assigning a link 'l' to -1. The event stays active for the specified clock cycle only.
+
+nocvision:pin:clock_<c>:pid_<id>:node_<n>:link_<l>:vc_<v>  
+nocvision:unpin:clock_<c>:pid_<id>:node_<n>:link_<l>:vc_<v>
+Specify the node 'n' and link 'l' for the given event id 'id' at clock cycle 'c'. The pin-unpin feature is used for viewing the events in which values in a component crosses above the threshold. All such events are activated when 'pin' is encountered and stay active for all the clock cycles till 'unpin' is encountered. For the events associated with routers, link 'l' is assigned to -1.
+
+
+c. Visualization
+
+Invoke NoCVision: 
+Once the configuration file is ready, invoke NoCVision:
+$ ./NoCVision.py path/to/the/conf_file
+
+Select the mode:
+NoCVision parses the configuration file and provides the options to select the mode. If data associated with both event and interval modes is present in the config file, options to select a mode are displayed. If only one mode is provided in the config file, NoCVision directly proceeds to the options associated with that mode without displaying the options.
+
+Select a parameter to plot: You can then select a parameter, start interval, and step size for your analysis. The default start interval is the earliest interval specified in the configuration file and default step size is 1. NoCVision also lists properties that can be associated with the chosen parameter. When the step size is greater than 1, this property is applied to the parameters to accumulate the values across the step intervals.
+
+Visualization: 
+NoCVision then displays the parameter starting with the interval and step size specified in the previous step. The next button displays the values for the next interval. Input values for each link are normalized and displayed with the colors ranging from blue (for the smallest value) to red (for the largest value). A color bar is also included to indicate the range of values plotted for a given interval. Double-clicking on a link opens a new window that displays VC traffic with the intensity colorbar. Also, shift-clicking on a component displays the value of the parameter in that component for that particular interval.
+

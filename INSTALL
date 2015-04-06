@@ -1,0 +1,12 @@
+Prerequisites
+Linux Machine (tested on Ubuntu 12.04 LTS and Ubuntu 14.04 LTS)
+Python version 2.7.x
+Python Matplotlib library
+
+To install python prerequisites on Ubuntu Linux, you can execute the following command:  
+$ sudo apt-get install python2.7 python-matplotlib
+
+Test your download
+You can run the example log file to verify that the environment is configured correctly.
+$ cd src/ 
+$ ./NoCVision.py ../example_config/sample_interval_mode.txt
